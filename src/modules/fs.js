@@ -3,9 +3,9 @@ import fs from "fs/promises";
 import process from "process";
 import { createReadStream, createWriteStream } from "fs";
 
-import { showInvalidMessage } from "../utils/index.js";
-
 const FAILED_OPERATION_MESSAGE = "Operation failed";
+
+const showFailedOperationError = () => console.log(FAILED_OPERATION_MESSAGE);
 
 export const onCatPressed = async (pathToFile = "") => {
   const currentPath = path.resolve(pathToFile);
@@ -13,9 +13,7 @@ export const onCatPressed = async (pathToFile = "") => {
   const readStream = createReadStream(currentPath);
   readStream.pipe(process.stdout);
 
-  readStream.on("error", () => {
-    console.log(FAILED_OPERATION_MESSAGE);
-  });
+  readStream.on("error", showFailedOperationError);
 };
 
 export const onAddPressed = async (filename = "") => {
@@ -23,7 +21,7 @@ export const onAddPressed = async (filename = "") => {
     const currentPath = path.resolve(filename);
     await fs.writeFile(currentPath, "", { flag: "wx" });
   } catch {
-    showInvalidMessage();
+    console.log(FAILED_OPERATION_MESSAGE);
   }
 };
 
@@ -32,7 +30,7 @@ export const onRmPressed = async (path_to_file = "") => {
     const PATH = path.resolve(path_to_file);
     await fs.rm(PATH);
   } catch {
-    showInvalidMessage();
+    console.log(FAILED_OPERATION_MESSAGE);
   }
 };
 
