@@ -1,6 +1,7 @@
 import process from "process";
 import fs from "fs/promises";
 import path from "path";
+import os from "os";
 
 import { DirItems } from "../dir-items/index.js";
 import { throwError } from "../utils/index.js";
@@ -10,6 +11,28 @@ const FAILED_OPERATION_MESSAGE = "Operation failed";
 const sortCallback = (a, b) => a.name - b.name;
 
 const getCurrentDir = () => process.cwd();
+
+const getRootDir = (currentDir = "") => {
+  let rootDir = "";
+
+  if (os.platform() === "win32") {
+    const drive = currentDir.charAt(0);
+
+    rootDir = `${drive}:\\`;
+  } else {
+    rootDir = "/";
+  }
+
+  return rootDir;
+};
+
+const isRootDir = (currentDir = "", rootDir = "") => {
+  if (os.platform() === "win32") {
+    return currentDir === rootDir;
+  }
+
+  return currentDir === "/";
+};
 
 export const onLsPressed = async () => {
   const files = [];
@@ -42,6 +65,13 @@ export const onUpPressed = async () => {
   const currentDir = getCurrentDir();
 
   const parentDir = path.dirname(currentDir);
+
+  const rootDir = getRootDir(currentDir);
+
+  if (isRootDir(currentDir, rootDir)) {
+    return;
+  }
+
   process.chdir(parentDir);
 };
 
