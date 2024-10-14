@@ -3,12 +3,19 @@ import os from "os";
 
 import { Readline } from "../readline/index.js";
 
+const GREETING_MESSAGE = "Welcome to the File Manager";
+const WORKING_DIRECTORY_MESSAGE = "You are currently in";
+const GOODBYE = "goodbye!";
+const THANX_MESSAGE = "Thank you for using File Manager";
+
 export class App {
   username = "Anonymous";
   usernameRegExp = /^--username=('[^']'|"[^"]"|\S+)$/;
 
   constructor() {
-    process.chdir(os.homedir());
+    const homedir = os.homedir();
+    process.chdir(homedir);
+
     this.setUserName();
     this.showGreeting();
     this.showWorkingDirectory();
@@ -37,15 +44,15 @@ export class App {
   }
 
   showGreeting() {
-    console.log(`Welcome to the File Manager, ${this.username}!${os.EOL}`);
+    console.log(`${GREETING_MESSAGE}, ${this.username}!${os.EOL}`);
   }
 
   showWorkingDirectory() {
-    console.log(`You are currently in ${process.cwd()}`);
+    console.log(`${WORKING_DIRECTORY_MESSAGE} ${process.cwd()}`);
   }
 
   showFarewell() {
-    const FAREWELL_MESSAGE = `Thank you for using File Manager, ${this.username}, goodbye!`;
+    const FAREWELL_MESSAGE = `${THANX_MESSAGE}, ${this.username}, ${GOODBYE}`;
     console.log(`${FAREWELL_MESSAGE}${os.EOL}`);
   }
 }
