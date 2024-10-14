@@ -21,24 +21,24 @@ import {
 
 const { stdin: input, stdout: output } = process;
 
+const commands = Object.freeze({
+  up: onUpPressed,
+  ls: onLsPressed,
+  cd: onCdPressed,
+  cat: onCatPressed,
+  add: onAddPressed,
+  rm: onRmPressed,
+  rn: onRnPressed,
+  cp: onCpPressed,
+  mv: onMvPressed,
+  compress: compress,
+  decompress: decompress,
+  os: osCommandHandler,
+  hash: calculateHash,
+});
+
 export class Readline {
   rl = readline.createInterface({ input, output });
-
-  commands = Object.freeze({
-    up: onUpPressed,
-    ls: onLsPressed,
-    cd: onCdPressed,
-    cat: onCatPressed,
-    add: onAddPressed,
-    rm: onRmPressed,
-    rn: onRnPressed,
-    cp: onCpPressed,
-    mv: onMvPressed,
-    compress: compress,
-    decompress: decompress,
-    os: osCommandHandler,
-    hash: calculateHash,
-  });
 
   constructor(showFarewell, showWorkingDirectory) {
     this.showFarewell = showFarewell;
@@ -61,8 +61,8 @@ export class Readline {
 
     const trimmedValue = command.trim();
 
-    if (this.commands[trimmedValue]) {
-      this.commands[trimmedValue](secondArg, thirdArg).then(fn);
+    if (commands[trimmedValue]) {
+      commands[trimmedValue](secondArg, thirdArg).then(fn);
     } else {
       showInvalidMessage();
       fn();

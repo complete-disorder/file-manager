@@ -9,6 +9,8 @@ const FAILED_OPERATION_MESSAGE = "Operation failed";
 
 const sortCallback = (a, b) => a.name - b.name;
 
+const getCurrentDir = () => process.cwd();
+
 export const onLsPressed = async () => {
   const files = [];
   const folders = [];
@@ -36,16 +38,10 @@ export const onLsPressed = async () => {
   }
 };
 
-const getCurrentDir = () => {
-  const currentDir = process.cwd();
-
-  return currentDir;
-};
-
 export const onUpPressed = async () => {
-  const currentDir = process.cwd();
-  const parentDir = path.join(currentDir, "..");
+  const currentDir = getCurrentDir();
 
+  const parentDir = path.dirname(currentDir);
   process.chdir(parentDir);
 };
 
