@@ -42,6 +42,7 @@ export class Readline {
 
   constructor(showFarewell, showWorkingDirectory) {
     this.showFarewell = showFarewell;
+
     this.rl.on("line", (line = "") =>
       this.commandsHandler(line, showWorkingDirectory)
     );
@@ -50,13 +51,18 @@ export class Readline {
 
   commandsHandler(line = "", fn) {
     const args = line.trim().split(" ");
+
     const [command, secondArg, thirdArg] = args;
+
     if (command === ".exit") {
       this.close();
       return;
     }
-    if (this.commands[command.trim()]) {
-      this.commands[command.trim()](secondArg, thirdArg).then(fn);
+
+    const trimmedValue = command.trim();
+
+    if (this.commands[trimmedValue]) {
+      this.commands[trimmedValue](secondArg, thirdArg).then(fn);
     } else {
       showInvalidMessage();
       fn();

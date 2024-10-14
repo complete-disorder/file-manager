@@ -8,8 +8,10 @@ const WORKING_DIRECTORY_MESSAGE = "You are currently in";
 const GOODBYE = "goodbye!";
 const THANX_MESSAGE = "Thank you for using File Manager";
 
+const ANONYMOUS = "Anonymous";
+
 export class App {
-  username = "Anonymous";
+  username = ANONYMOUS;
   usernameRegExp = /^--username=('[^']'|"[^"]"|\S+)$/;
 
   constructor() {
@@ -19,6 +21,7 @@ export class App {
     this.setUserName();
     this.showGreeting();
     this.showWorkingDirectory();
+
     this.readline = new Readline(
       () => this.showFarewell(),
       () => this.showWorkingDirectory()
@@ -48,7 +51,8 @@ export class App {
   }
 
   showWorkingDirectory() {
-    console.log(`${WORKING_DIRECTORY_MESSAGE} ${process.cwd()}`);
+    const currentDir = process.cwd();
+    console.log(`${WORKING_DIRECTORY_MESSAGE} ${currentDir}`);
   }
 
   showFarewell() {

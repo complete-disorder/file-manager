@@ -5,6 +5,8 @@ import path from "path";
 import { DirItems } from "../dir-items/index.js";
 import { throwError } from "../utils/index.js";
 
+const FAILED_OPERATION_MESSAGE = "Operation failed";
+
 const sortCallback = (a, b) => a.name - b.name;
 
 export const onLsPressed = async () => {
@@ -34,10 +36,25 @@ export const onLsPressed = async () => {
   }
 };
 
+const getCurrentDir = () => {
+  const currentDir = process.cwd();
+
+  return currentDir;
+};
+
 export const onUpPressed = async () => {
-  process.chdir(path.resolve(".."));
+  const currentDir = process.cwd();
+  const parentDir = path.join(currentDir, "..");
+
+  process.chdir(parentDir);
 };
 
 export const onCdPressed = async (pathToDirectory = "") => {
-  process.chdir(path.resolve(pathToDirectory));
+  const resolvedPath = path.resolve(pathToDirectory);
+
+  try {
+    process.chdir(resolvedPath);
+  } catch {
+    console.log(FAILED_OPERATION_MESSAGE);
+  }
 };
