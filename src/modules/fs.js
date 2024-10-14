@@ -5,10 +5,17 @@ import { createReadStream, createWriteStream } from "fs";
 
 import { showInvalidMessage } from "../utils/index.js";
 
+const FAILED_OPERATION_MESSAGE = "Operation failed";
+
 export const onCatPressed = async (pathToFile = "") => {
   const currentPath = path.resolve(pathToFile);
+
   const readStream = createReadStream(currentPath);
   readStream.pipe(process.stdout);
+
+  readStream.on("error", () => {
+    console.log(FAILED_OPERATION_MESSAGE);
+  });
 };
 
 export const onAddPressed = async (filename = "") => {
@@ -35,7 +42,7 @@ export const onRnPressed = async (pathToFile = "", filename = "") => {
     const newFilePath = path.resolve(filename);
     await fs.rename(resolvedPath, newFilePath);
   } catch {
-    showInvalidMessage();
+    console.log(FAILED_OPERATION_MESSAGE);
   }
 };
 
@@ -45,11 +52,25 @@ export const onCpPressed = async (
 ) => {
   const { base } = path.parse(path_to_file);
   const PATH = path.resolve(path_to_file);
+
+  const writeStreamPath = path.resolve(path_to_new_directory, base);
+
   const readStream = createReadStream(PATH);
-  const writeStream = createWriteStream(
-    path.resolve(path_to_new_directory, base)
-  );
+  const writeStream = createWriteStream(writeStreamPath);
+
   readStream.pipe(writeStream);
+
+  let errorHandled = false;
+
+  const handleError = () => {
+    if (!errorHandled) {
+      console.log(FAILED_OPERATION_MESSAGE);
+      errorHandled = true;
+    }
+  };
+
+  readStream.on("error", handleError);
+  writeStream.on("error", handleError);
 };
 
 export const onMvPressed = async (
@@ -57,5 +78,11 @@ export const onMvPressed = async (
   path_to_new_directory = ""
 ) => {
   onCpPressed(path_to_file, path_to_new_directory);
-  await fs.rm(path.resolve(path_to_file));
+
+  try {
+    const resolvedPath = path.resolve(path_to_file);
+    await fs.rm(resolvedPath);
+  } catch {
+    console.log(FAILED_OPERATION_MESSAGE);
+  }
 };

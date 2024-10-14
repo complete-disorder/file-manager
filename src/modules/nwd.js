@@ -76,10 +76,9 @@ export const onUpPressed = async () => {
 };
 
 export const onCdPressed = async (pathToDirectory = "") => {
-  const resolvedPath = path.resolve(pathToDirectory);
-
+  const absolutePath = path.resolve(pathToDirectory);
   try {
-    process.chdir(resolvedPath);
+    process.chdir(absolutePath);
   } catch {
     console.log(FAILED_OPERATION_MESSAGE);
   }
